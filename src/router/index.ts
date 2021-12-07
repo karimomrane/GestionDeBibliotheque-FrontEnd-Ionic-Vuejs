@@ -7,6 +7,7 @@ import AddBook from '../views/AddBook.vue'
 import UserProfile from '../views/UserProfile.vue'
 import UpdateBook from '../views/UpdateBook.vue'
 import Emprunts from '../views/emprunts.vue'
+import Historique from '../views/historique.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -46,6 +47,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/emprunts',
     name: 'Emprunts',
     component: Emprunts
+  },
+  {
+    path: '/historique',
+    name: 'Historique',
+    component: Historique
   }
 ]
 

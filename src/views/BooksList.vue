@@ -9,17 +9,16 @@
     <ion-content>
       <ion-list>
         <ion-item class="clickable" router-link='/books'><ion-icon slot="start" name="book"></ion-icon>Liste des Livres</ion-item>
-        <ion-item class="clickable" router-link='/userprofile'><ion-icon slot="start" name="person"></ion-icon>Profile</ion-item>
-        <ion-item class="clickable" router-link='/emprunts'><ion-icon slot="start" name="emp"></ion-icon>Emprunts</ion-item>
+        <ion-item class="clickable" router-link='/emprunts'><ion-icon slot="start" name="file-tray-full"></ion-icon>Emprunts</ion-item>
+                <ion-item class="clickable" router-link='/historique'><ion-icon slot="start" name="list"></ion-icon>Historique</ion-item>
+                        <ion-item class="clickable" router-link='/userprofile'><ion-icon slot="start" name="person"></ion-icon>Profile</ion-item>
+
         <ion-item class="clickable"><ion-button @click="logout()" expand="full" fill="clear"><ion-icon slot="start" name="log-out"></ion-icon>Déconnexion</ion-button></ion-item>
       </ion-list>
     </ion-content>
     </ion-menu>
  <ion-header translucent>
         <ion-toolbar color="primary"> 
-            <ion-title>
-               Liste des Livres
-            </ion-title>
             <ion-fab-button size="small" router-link="/addbook" edge slot="end" color="primary"><ion-icon  name="add-circle"></ion-icon></ion-fab-button>
             <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
@@ -81,6 +80,7 @@ import { defineComponent } from 'vue';
 import { addIcons } from "ionicons";
 import { create,trash, addCircle, book, person, logOut } from "ionicons/icons";
 import axios from 'axios';
+
 addIcons({
   "create": create,
   "trash" : trash,
@@ -101,6 +101,12 @@ export default defineComponent({
   async mounted () {
     
     axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}` 
+       axios.get('http://127.0.0.1:8000/api/livres/')
+        .then(response => {
+          this.livres = response.data
+           })
+        .catch(error => this.$router.push({name: 'Home'}))
+      
      axios
         .get('http://127.0.0.1:8000/api/livres/')
         .then(response => (this.livres = response.data))
@@ -134,6 +140,8 @@ logout(){
   axios.post('http://127.0.0.1:8000/api/logout')
   .then(async (response) =>{
             localStorage.removeItem('token')
+            localStorage.removeItem('email')
+            localStorage.removeItem('name')
             this.$router.push({name: 'Home'})
       })
             

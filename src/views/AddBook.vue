@@ -60,6 +60,7 @@ import { IonTextarea, IonContent, IonHeader, IonPage, IonItem, IonLabel,
 import { defineComponent } from 'vue';
 import { addIcons } from "ionicons";
 import { image } from "ionicons/icons";
+import router from '../router';
 import axios from 'axios';
 addIcons({
   "image": image
@@ -98,9 +99,8 @@ export default defineComponent({
                    'nbr_exemplaire':this.nbr_exemplaire,
                    image: this.image,
                })
-               .then(async (response) => {  
-                 if(response.status==200){
-                   
+               .then(async (response) => {
+                 router.push({name: 'Books'})
                 const toast = await toastController
                   .create({
                     message: 'Le livre a été ajouté',
@@ -108,7 +108,7 @@ export default defineComponent({
                     duration: 2000
                   })
                 return toast.present();
-                }
+               
                  }).catch(async error => {
                    const toast = await toastController
                   .create({

@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-   <ion-menu side="start" menu-id="usermenu" content-id="usermenucontent">
+    <ion-menu side="start" menu-id="usermenu" content-id="usermenucontent">
     <ion-header>
       <ion-toolbar color="primary">
         <ion-title>{{name}}</ion-title>
@@ -8,8 +8,8 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item class="clickable" router-link='/books'><ion-icon slot="start" name="book"></ion-icon>Liste des Livres</ion-item>
-        <ion-item class="clickable" router-link='/emprunts'><ion-icon slot="start" name="file-tray-full"></ion-icon>Emprunts</ion-item>
+         <ion-item class="clickable" router-link='/books'><ion-icon slot="start" name="book"></ion-icon>Liste des Livres</ion-item>
+        <ion-item class="clickable" href='/emprunts'><ion-icon slot="start" name="file-tray-full"></ion-icon>Emprunts</ion-item>
         <ion-item class="clickable" router-link='/historique'><ion-icon slot="start" name="list"></ion-icon>Historique</ion-item>
                 <ion-item class="clickable" router-link='/userprofile'><ion-icon slot="start" name="person"></ion-icon>Profile</ion-item>
 
@@ -22,7 +22,7 @@
     <ion-header translucent>
         <ion-toolbar color="primary"> 
             <ion-title>
-               Profile
+               Historique
             </ion-title>
             <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
@@ -31,25 +31,24 @@
     </ion-header>
     
     <ion-content :fullscreen="true" forceOverscroll>
-           
-  <ion-card id="container">
-      <ion-card-header>
-         <ion-card-title>Profile</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>   
+  <ion-card>
+      <ion-card-content>    
+          <ion-list-header>
+        <h2>Historique</h2> 
+        </ion-list-header>
+        <ion-list v-for="(his,index) in historiques" :key="index">
         <ion-item>
-            <ion-avatar class="avatar">
-                <img src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png">
-            </ion-avatar>
+            <ion-item>
+         <ion-icon name="person-circle-outline" size="large"></ion-icon> 
+            </ion-item>
+          <ion-label>
+            <h2>{{ his.user.name }}</h2>
+            <h2>{{ his.livre.titre }}</h2>
+            <p>{{his.created_at}}</p>
+            <p>{{his.updated_at}}</p>
+          </ion-label>
         </ion-item>
-        <ion-item>
-          <ion-label>{{ name }}</ion-label>     
-          
-        </ion-item>
-          <ion-item>
-           
-          <ion-label>{{ email }}</ion-label>    
-        </ion-item>
+        </ion-list>
 
       </ion-card-content>
   </ion-card>
@@ -58,28 +57,34 @@
 </template>
 
 <script lang="ts">
-import { IonContent, IonHeader, IonPage, IonItem, IonLabel, IonCard, IonCardContent, IonCardTitle,IonMenu } from '@ionic/vue';
+import { IonContent, IonHeader, IonPage,IonIcon, IonItem,toastController, IonLabel, IonCard, IonCardContent,IonMenu,IonToolbar} from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { addIcons } from "ionicons";
-import { image } from "ionicons/icons";
+import { image,personCircle,fileTrayFull,listOutline } from "ionicons/icons";
+import router from '../router';
 import axios from 'axios';
 addIcons({
-  "image": image
+  "image": image,
+  "person-circle-outline":personCircle,
+  "file-tray-full":fileTrayFull,
+  "list":listOutline
 })
 
 export default defineComponent({
   data() {
     return {
-      name:localStorage.getItem('name'),
-      email:localStorage.getItem('email')
+     historiques:[]
     }
   },
    created() {
     axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
     axios
-        .get('http://127.0.0.1:8000/api/livres/')
-        .then()
+        .get('http://127.0.0.1:8000/api/historique/')
+        .then(response=>this.historiques=response.data)
         .catch(error => this.$router.push({name: 'Home'}))
+  },
+  methods: {
+   
   },
   name: 'Home',
   components: {
@@ -87,7 +92,8 @@ export default defineComponent({
     IonHeader,
     IonPage,
     IonItem,
-    IonLabel, IonCardTitle, IonCard, IonCardContent,IonMenu
+    IonLabel, IonCard, IonCardContent,IonMenu,IonToolbar,IonIcon,
+    
     
   }
 });
